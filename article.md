@@ -32,11 +32,11 @@ Running power flow analysis at scale requires significant computational resource
 ### Architectural Overview: CYME on AWS
 The architecture for running CYME on AWS typically includes:
 
-1.  [**Amazon EC2 (Elastic Compute Cloud)** --- Provides compute instances to run CYME.]
-2.  [**Amazon FSx for Windows File Server** --- Enables shared storage for CYME project files.]
-3.  [**Amazon S3** --- Stores results, input datasets, and logs for long-term access.]
-4.  [**AWS Systems Manager** --- Automates deployment and software updates.]
-5.  [**AWS Batch (Optional)** --- Manages high-throughput CYME simulations.]
+1.  [Amazon EC2 (Elastic Compute Cloud) --- Provides compute instances to run CYME.]
+2.  [Amazon FSx for Windows File Server --- Enables shared storage for CYME project files.]
+3.  [Amazon S3 --- Stores results, input datasets, and logs for long-term access.]
+4.  [AWS Systems Manager --- Automates deployment and software updates.]
+5.  [AWS Batch (Optional) --- Manages high-throughput CYME simulations.]
 
 A typical workflow:
 
@@ -53,28 +53,28 @@ A typical workflow:
 #### Choosing the Right EC2 Instance
 CYME runs on Windows, requiring EC2 instances that support Windows Server. Key considerations:
 
-- **General Use (Small Networks)**: `m6i.large` (2 vCPUs, 8GB RAM)
-- **Medium Networks**: `m6i.xlarge` (4 vCPUs, 16GB RAM)
-- **Large Networks & Monte Carlo Studies**: `r6i.4xlarge` (16 vCPUs, 128GB RAM)
+- General Use (Small Networks): `m6i.large` (2 vCPUs, 8GB RAM)
+- Medium Networks: `m6i.xlarge` (4 vCPUs, 16GB RAM)
+- Large Networks & Monte Carlo Studies: `r6i.4xlarge` (16 vCPUs, 128GB RAM)
 
 For GPU acceleration (if used for visualization), `g4dn.xlarge` with NVIDIA T4 GPUs is an option.
 
 #### Steps to Launch CYME on EC2
-1.  [**Launch an EC2 instance**:]
+1.  [Launch an EC2 instance:]
 
-- Use **Windows Server 2022 AMI**.
-- Attach an **Elastic IP** to ensure stable access.
+- Use Windows Server 2022 AMI.
+- Attach an Elastic IP to ensure stable access.
 - Configure IAM roles for S3 access if storing results remotely.
 
-1.  [**Install CYME**:]
+1.  [Install CYME:]
 
 - Connect via Remote Desktop Protocol (RDP).
 - Download and install CYME from Eaton's website (requires licensing).
 - Configure license settings, typically requiring a network license server.
 
-1.  [**Attach FSx for Shared Storage**:]
+1.  [Attach FSx for Shared Storage:]
 
-- Create an **FSx for Windows File Server** instance.
+- Create an FSx for Windows File Server instance.
 - Mount FSx to the EC2 instance for shared file access.
 
 ### Automating CYME Workflows
@@ -94,8 +94,7 @@ Start-Process -FilePath "C:\Program Files\CYME\CYME.exe" -ArgumentList "/RunPowe
 ### Running Batch Simulations with AWS Batch
 AWS Batch can run multiple CYME simulations in parallel using an auto-scaling compute fleet.
 
-**Steps to set up AWS Batch for CYME:**
-
+Steps to set up AWS Batch for CYME:
 1.  [Create an AWS Batch Compute Environment with EC2 Windows instances.]
 2.  [Define a job queue and job definition for CYME execution.]
 3.  [Submit CYME jobs via AWS CLI:]
@@ -114,31 +113,31 @@ To store and retrieve power flow analysis results:
 ### Database Integration for Analysis
 For post-processing, results can be stored in:
 
-- **Amazon RDS (SQL Server)** --- Structured queries on power flow data
-- **Amazon Timestream** --- Time-series storage for grid behavior trends
-- **Amazon Athena** --- SQL-based queries on S3-stored CSVs
+- Amazon RDS (SQL Server) --- Structured queries on power flow data
+- Amazon Timestream --- Time-series storage for grid behavior trends
+- Amazon Athena --- SQL-based queries on S3-stored CSVs
 
 ### Cost Optimization Strategies
 AWS costs depend on instance types, storage, and data transfer. To minimize expenses:
 
-1.  [**Use Spot Instances** for non-time-sensitive workloads (up to 70% cost savings).]
-2.  [**Schedule Instance Start/Stop** using Lambda:]
+1.  [Use Spot Instances for non-time-sensitive workloads (up to 70% cost savings).]
+2.  [Schedule Instance Start/Stop using Lambda:]
 
 ```python
 import boto3 ec2 = boto3.client('ec2') 
 ec2.stop_instances(InstanceIds=['i-1234567890abcdef0'])
 ```
 
-1.  [**Store Results in S3 and Use Lifecycle Policies** to move old data to Glacier.]
-2.  [**Use Reserved Instances** for consistent workloads to reduce EC2 costs.]
+1.  [Store Results in S3 and Use Lifecycle Policies to move old data to Glacier.]
+2.  [Use Reserved Instances for consistent workloads to reduce EC2 costs.]
 
 ### Example Use Case: Power Flow Analysis for Distributed Energy Resources
 A utility company wants to evaluate the impact of distributed solar and battery storage on voltage stability. By running CYME on AWS:
 
-- **Dataset**: Smart meter and solar generation profiles stored in S3
-- **Computation**: Monte Carlo simulations using AWS Batch
-- **Storage**: Results analyzed in Amazon Timestream for long-term trends
-- **Automation**: AWS Systems Manager triggers CYME runs daily
+- Dataset: Smart meter and solar generation profiles stored in S3
+- Computation: Monte Carlo simulations using AWS Batch
+- Storage: Results analyzed in Amazon Timestream for long-term trends
+- Automation: AWS Systems Manager triggers CYME runs daily
 
 Results show peak voltage fluctuations at feeder endpoints, prompting infrastructure upgrades.
 
