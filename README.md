@@ -11,14 +11,7 @@ Utilities and consultants can run CYME efficiently on AWS. This lets them scale 
 
 Unable to execute JavaScript.<figcaption>Song Zhang, PhD, from AWS describing how this process works.</figcaption>
 
-## About
 
-Place the code for this article in this repository.
-The original article export is saved as `article.md`.
-
-## Files
-
-Add your `.ipynb`, `.py`, `.yaml`, `.js`, `.ts`, or other project files here.
 
 ## Disclaimer
 
